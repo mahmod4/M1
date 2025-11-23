@@ -184,8 +184,18 @@ function updateAuthNavigation() {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
         navButtons.innerHTML = `
             <a href="profile.html" class="btn btn-outline">البروفايل</a>
-            <button class="btn btn-primary" onclick="window.API.Auth.logout()">تسجيل الخروج</button>
+            <button class="btn btn-primary" id="logoutBtnMain">تسجيل الخروج</button>
         `;
+        
+        // Setup logout button
+        const logoutBtn = document.getElementById('logoutBtnMain');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (window.API && window.API.Auth) {
+                    window.API.Auth.logout();
+                }
+            });
+        }
     } else {
         navButtons.innerHTML = `
             <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
