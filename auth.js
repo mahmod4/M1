@@ -133,6 +133,28 @@ function setupLoginForm() {
             // Call API
             const response = await window.API.Auth.login(email, password);
             
+            console.log('Login response:', response);
+            
+            // التحقق من نجاح تسجيل الدخول
+            const savedUser = localStorage.getItem('user');
+            if (!savedUser) {
+                throw new Error('فشل حفظ بيانات المستخدم');
+            }
+            
+            const user = JSON.parse(savedUser);
+            console.log('User logged in:', user);
+            
+            // التحقق من وجود token
+            const token = window.API.TokenManager.getToken();
+            if (!token && !user.id) {
+                console.warn('No token received');
+            }
+            
+            // التحقق من أن المستخدم موجود
+            if (!user.email && !user.id) {
+                throw new Error('بيانات المستخدم غير مكتملة');
+            }
+            
             showMessage('تم تسجيل الدخول بنجاح!', 'success');
             
             // تحديث الأزرار في جميع الصفحات
@@ -141,7 +163,6 @@ function setupLoginForm() {
             }
             
             // تحديد لوحة التحكم المناسبة
-            const user = JSON.parse(localStorage.getItem('user') || '{}');
             const userType = user.userType || user.user_type;
             const dashboardLink = userType === 'craftsman' 
                 ? 'craftsman-dashboard.html' 
@@ -149,9 +170,26 @@ function setupLoginForm() {
             
             setTimeout(() => {
                 window.location.href = dashboardLink;
-            }, 1000);
+            }, 1500);
         } catch (error) {
-            showMessage(error.message || 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى', 'error');
+            console.error('Login error:', error);
+            
+            // رسائل خطأ واضحة
+            let errorMessage = 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى';
+            
+            if (error.message) {
+                if (error.message.includes('غير صحيحة') || error.message.includes('401') || error.message.includes('Unauthorized')) {
+                    errorMessage = 'البريد الإلكتروني أو كلمة المرور غير صحيحة';
+                } else if (error.message.includes('غير موجود') || error.message.includes('404')) {
+                    errorMessage = 'المستخدم غير موجود. يرجى التحقق من البريد الإلكتروني أو إنشاء حساب جديد';
+                } else if (error.message.includes('تم تعطيل')) {
+                    errorMessage = error.message;
+                } else {
+                    errorMessage = error.message;
+                }
+            }
+            
+            showMessage(errorMessage, 'error');
         }
     });
 }
@@ -265,18 +303,54 @@ function setupSignupForm() {
             
             console.log('Signup response:', response);
             
+            // التحقق من نجاح التسجيل
+            const savedUser = localStorage.getItem('user');
+            if (!savedUser) {
+                throw new Error('فشل حفظ بيانات المستخدم');
+            }
+            
+            const user = JSON.parse(savedUser);
+            console.log('User saved:', user);
+            
+            // التحقق من وجود token
+            const token = window.API.TokenManager.getToken();
+            if (!token && !user.id) {
+                console.warn('No token received, but user created successfully');
+            }
+            
             showMessage('تم إنشاء الحساب بنجاح!', 'success');
             
+            // تحديث الأزرار في جميع الصفحات
+            if (typeof updateAuthNavigation === 'function') {
+                updateAuthNavigation();
+            }
+            
+            // تحديد لوحة التحكم المناسبة
+            const savedUserType = user.userType || user.user_type || userType;
+            const dashboardLink = savedUserType === 'craftsman' 
+                ? 'craftsman-dashboard.html' 
+                : 'client-dashboard.html';
+            
             setTimeout(() => {
-                if (userType === 'craftsman') {
-                    window.location.href = 'craftsman-dashboard.html';
-                } else {
-                    window.location.href = 'client-dashboard.html';
-                }
-            }, 1000);
+                window.location.href = dashboardLink;
+            }, 1500);
         } catch (error) {
             console.error('Signup error:', error);
-            showMessage(error.message || 'فشل إنشاء الحساب. يرجى المحاولة مرة أخرى', 'error');
+            
+            // رسائل خطأ واضحة
+            let errorMessage = 'فشل إنشاء الحساب. يرجى المحاولة مرة أخرى';
+            
+            if (error.message) {
+                if (error.message.includes('مستخدم بالفعل') || error.message.includes('already exists')) {
+                    errorMessage = 'البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر';
+                } else if (error.message.includes('404')) {
+                    errorMessage = 'Endpoint غير موجود. يرجى التحقق من إعدادات Xano';
+                } else {
+                    errorMessage = error.message;
+                }
+            }
+            
+            showMessage(errorMessage, 'error');
             if (submitBtn) {
                 submitBtn.disabled = false;
                 submitBtn.textContent = 'إنشاء الحساب';

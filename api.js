@@ -111,70 +111,139 @@ async function apiRequest(endpoint, options = {}) {
 const AuthAPI = {
     // تسجيل مستخدم جديد
     signup: async (userData) => {
-        // إذا كان هناك Query ID للتسجيل، استخدمه
-        if (XANO_QUERY_IDS.SIGNUP) {
-            return await XanoQueries.callQuery(XANO_QUERY_IDS.SIGNUP, userData);
-        }
-        
-        // محاولة استخدام REST endpoint
         try {
-            return await apiRequest('/auth/signup', {
-                method: 'POST',
-                body: userData
-            });
-        } catch (error) {
-            // إذا فشل REST endpoint، حاول استخدام Query 3199389 (أول query متوفر)
-            console.warn('REST endpoint failed, trying query endpoint...');
-            try {
-                return await XanoQueries.callQuery('3199389', userData);
-            } catch (queryError) {
-                throw new Error('فشل إنشاء الحساب. يرجى التحقق من إعدادات Xano أو تحديث XANO_QUERY_IDS.SIGNUP في api.js');
+            let response;
+            
+            // إذا كان هناك Query ID للتسجيل، استخدمه
+            if (XANO_QUERY_IDS.SIGNUP) {
+                response = await XanoQueries.callQuery(XANO_QUERY_IDS.SIGNUP, userData);
+            } else {
+                // محاولة استخدام REST endpoint
+                try {
+                    response = await apiRequest('/auth/signup', {
+                        method: 'POST',
+                        body: userData
+                    });
+                } catch (error) {
+                    // إذا فشل REST endpoint، حاول استخدام Query 3199389
+                    console.warn('REST endpoint failed, trying query endpoint...');
+                    response = await XanoQueries.callQuery('3199389', userData);
+                }
             }
+            
+            // التحقق من أن الرد يحتوي على بيانات المستخدم
+            if (!response) {
+                throw new Error('لم يتم استلام رد من السيرفر');
+            }
+            
+            // حفظ token و user إذا كانا موجودين
+            if (response.token) {
+                TokenManager.setToken(response.token);
+            }
+            
+            if (response.user) {
+                localStorage.setItem('user', JSON.stringify(response.user));
+            } else if (response.data && response.data.user) {
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+                if (response.data.token) {
+                    TokenManager.setToken(response.data.token);
+                }
+            } else if (response.id || response.email) {
+                // إذا كان الرد هو user object مباشرة
+                localStorage.setItem('user', JSON.stringify(response));
+            }
+            
+            // تحديث الأزرار بعد التسجيل
+            if (typeof updateAuthNavigation === 'function') {
+                setTimeout(() => updateAuthNavigation(), 100);
+            }
+            
+            return response;
+        } catch (error) {
+            // معالجة أخطاء محددة
+            if (error.message && error.message.includes('already exists') || 
+                error.message && error.message.includes('مستخدم موجود')) {
+                throw new Error('البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر');
+            }
+            
+            if (error.message && error.message.includes('404')) {
+                throw new Error('Endpoint غير موجود. يرجى التحقق من إعدادات Xano');
+            }
+            
+            throw error;
         }
     },
     
     // تسجيل الدخول
     login: async (email, password) => {
-        // إذا كان هناك Query ID لتسجيل الدخول، استخدمه
-        if (XANO_QUERY_IDS.LOGIN) {
-            const response = await XanoQueries.callQuery(XANO_QUERY_IDS.LOGIN, { email, password });
+        try {
+            let response;
             
-            if (response.token) {
-                TokenManager.setToken(response.token);
-                localStorage.setItem('user', JSON.stringify(response.user));
+            // إذا كان هناك Query ID لتسجيل الدخول، استخدمه
+            if (XANO_QUERY_IDS.LOGIN) {
+                response = await XanoQueries.callQuery(XANO_QUERY_IDS.LOGIN, { email, password });
+            } else {
+                // محاولة استخدام REST endpoint
+                try {
+                    response = await apiRequest('/auth/login', {
+                        method: 'POST',
+                        body: { email, password }
+                    });
+                } catch (error) {
+                    // إذا فشل REST endpoint، حاول استخدام Query
+                    console.warn('REST endpoint failed, trying query endpoint...');
+                    response = await XanoQueries.callQuery('3199390', { email, password });
+                }
             }
             
-            return response;
-        }
-        
-        // محاولة استخدام REST endpoint
-        try {
-            const response = await apiRequest('/auth/login', {
-                method: 'POST',
-                body: { email, password }
-            });
+            // التحقق من أن الرد صحيح
+            if (!response) {
+                throw new Error('لم يتم استلام رد من السيرفر');
+            }
             
+            // حفظ token و user
             if (response.token) {
                 TokenManager.setToken(response.token);
+            } else if (response.data && response.data.token) {
+                TokenManager.setToken(response.data.token);
+            }
+            
+            if (response.user) {
                 localStorage.setItem('user', JSON.stringify(response.user));
+            } else if (response.data && response.data.user) {
+                localStorage.setItem('user', JSON.stringify(response.data.user));
+            } else if (response.id || response.email) {
+                // إذا كان الرد هو user object مباشرة
+                localStorage.setItem('user', JSON.stringify(response));
+            }
+            
+            // التحقق من أن المستخدم تم حفظه بنجاح
+            const savedUser = localStorage.getItem('user');
+            if (!savedUser) {
+                throw new Error('فشل حفظ بيانات المستخدم');
+            }
+            
+            // تحديث الأزرار بعد تسجيل الدخول
+            if (typeof updateAuthNavigation === 'function') {
+                setTimeout(() => updateAuthNavigation(), 100);
             }
             
             return response;
         } catch (error) {
-            // إذا فشل REST endpoint، حاول استخدام Query
-            console.warn('REST endpoint failed, trying query endpoint...');
-            try {
-                const response = await XanoQueries.callQuery('3199390', { email, password });
-                
-                if (response.token) {
-                    TokenManager.setToken(response.token);
-                    localStorage.setItem('user', JSON.stringify(response.user));
-                }
-                
-                return response;
-            } catch (queryError) {
-                throw new Error('فشل تسجيل الدخول. يرجى التحقق من إعدادات Xano أو تحديث XANO_QUERY_IDS.LOGIN في api.js');
+            // معالجة أخطاء محددة
+            if (error.message && (error.message.includes('401') || error.message.includes('Unauthorized'))) {
+                throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
             }
+            
+            if (error.message && error.message.includes('404')) {
+                throw new Error('المستخدم غير موجود. يرجى التحقق من البريد الإلكتروني');
+            }
+            
+            if (error.message && error.message.includes('403')) {
+                throw new Error('تم تعطيل حسابك. يرجى التواصل مع الدعم');
+            }
+            
+            throw error;
         }
     },
     
@@ -634,9 +703,29 @@ const XanoQueries = {
             }
             
             const data = await response.json();
+            
+            // معالجة أخطاء محددة من Xano
+            if (response.status === 400) {
+                if (data.message && (data.message.includes('already exists') || data.message.includes('مستخدم'))) {
+                    throw new Error('البريد الإلكتروني مستخدم بالفعل');
+                }
+                throw new Error(data.message || 'بيانات غير صحيحة');
+            }
+            
+            if (response.status === 404) {
+                throw new Error('المستخدم غير موجود');
+            }
+            
+            if (response.status === 401) {
+                throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            }
+            
             return data.data || data;
         } catch (error) {
-            console.error(`Xano Query ${queryId} Error:`, error);
+            // إذا كان الخطأ من fetch نفسه
+            if (error.message && !error.message.includes('البريد') && !error.message.includes('المستخدم')) {
+                console.error(`Xano Query ${queryId} Error:`, error);
+            }
             throw error;
         }
     }
