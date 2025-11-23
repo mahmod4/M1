@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>الحرفيين - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <a href="index.html" style="text-decoration: none; color: inherit;">
+                            <h2>🛠️ منصة الحرفيين</h2>
+                        </a>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="craftsmen.html" class="active">الحرفيين</a></li>
+                        <li><a href="my-orders.html">طلباتي</a></li>
+                        <li><a href="chat.html">المحادثات</a></li>
+                    </ul>
+                    <div class="nav-buttons" id="navButtons">
+                        <a href="login.html" class="btn btn-outline">تسجيل الدخول</a>
+                        <a href="signup.html" class="btn btn-primary">انضم كحرفي</a>
+                    </div>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Filters Section -->
+    <section class="filters-section">
+        <div class="container">
+            <div class="filters-container">
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="ابحث عن حرفي..." class="search-input-large">
+                    <button class="btn btn-primary" id="searchBtn">بحث</button>
+                </div>
+                
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>التخصص</label>
+                        <select id="specialtyFilter" class="filter-select">
+                            <option value="">جميع التخصصات</option>
+                            <option value="carpentry">نجارة</option>
+                            <option value="plumbing">سباكة</option>
+                            <option value="electrical">كهرباء</option>
+                            <option value="painting">دهان</option>
+                            <option value="tiling">بلاط</option>
+                            <option value="welding">حدادة</option>
+                            <option value="construction">بناء</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>المحافظة</label>
+                        <select id="cityFilter" class="filter-select">
+                            <option value="">جميع المحافظات</option>
+                            <option value="cairo">القاهرة</option>
+                            <option value="alexandria">الإسكندرية</option>
+                            <option value="giza">الجيزة</option>
+                            <option value="mansoura">المنصورة</option>
+                            <option value="tanta">طنطا</option>
+                            <option value="aswan">أسوان</option>
+                            <option value="luxor">الأقصر</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>السعر (جنيه/ساعة)</label>
+                        <select id="priceFilter" class="filter-select">
+                            <option value="">جميع الأسعار</option>
+                            <option value="0-50">أقل من 50</option>
+                            <option value="50-100">50 - 100</option>
+                            <option value="100-200">100 - 200</option>
+                            <option value="200+">أكثر من 200</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>التقييم</label>
+                        <select id="ratingFilter" class="filter-select">
+                            <option value="">جميع التقييمات</option>
+                            <option value="5">5 نجوم</option>
+                            <option value="4">4 نجوم فأكثر</option>
+                            <option value="3">3 نجوم فأكثر</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button class="btn btn-outline" id="clearFilters">مسح الفلاتر</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Craftsmen List -->
+    <section class="craftsmen-list-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">جميع الحرفيين</h2>
+                <p id="resultsCount" class="results-count">جاري التحميل...</p>
+            </div>
+            
+            <div class="craftsmen-grid" id="craftsmenGrid">
+                <!-- Craftsmen cards will be loaded here -->
+                <div class="loading">جاري التحميل...</div>
+            </div>
+            
+            <div class="pagination" id="pagination" style="display: none;">
+                <!-- Pagination will be added here -->
+            </div>
+        </div>
+    </section>
+
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+    <script src="craftsmen.js"></script>
+</body>
+</html>
+
+

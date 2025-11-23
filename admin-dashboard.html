@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <h2>🛠️ لوحة التحكم</h2>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="admin-dashboard.html" class="active">الإحصائيات</a></li>
+                        <li><a href="admin-users.html">المستخدمين</a></li>
+                        <li><a href="admin-craftsmen.html">الحرفيين</a></li>
+                    </ul>
+                    <div class="nav-buttons">
+                        <a href="index.html" class="btn btn-outline">الموقع الرئيسي</a>
+                        <button class="btn btn-primary" onclick="window.API.Auth.logout()">تسجيل الخروج</button>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="padding: 3rem 20px;">
+        <h1 style="margin-bottom: 2rem;">لوحة التحكم</h1>
+        
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <h3 id="totalUsers">-</h3>
+                    <p>إجمالي المستخدمين</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🛠️</div>
+                <div class="stat-info">
+                    <h3 id="totalCraftsmen">-</h3>
+                    <p>إجمالي الحرفيين</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <h3 id="totalOrders">-</h3>
+                    <p>إجمالي الطلبات</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3 id="completedOrders">-</h3>
+                    <p>الطلبات المكتملة</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="dashboard-section">
+            <h2>النشاط الأخير</h2>
+            <div id="recentActivity" class="activity-list">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="script.js"></script>
+    <script src="admin-dashboard.js"></script>
+</body>
+</html>
+
+

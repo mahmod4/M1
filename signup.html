@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء حساب - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="index.html" class="logo-link">
+                    <h2>🛠️ منصة الحرفيين</h2>
+                </a>
+                <h1>إنشاء حساب جديد</h1>
+                <p>انضم إلينا واحصل على أفضل الخدمات</p>
+            </div>
+
+            <div class="user-type-selector">
+                <button type="button" class="user-type-btn active" data-type="client" id="clientBtn">
+                    <span class="user-icon">👤</span>
+                    <span>عميل</span>
+                </button>
+                <button type="button" class="user-type-btn" data-type="craftsman" id="craftsmanBtn">
+                    <span class="user-icon">🛠️</span>
+                    <span>حرفي</span>
+                </button>
+            </div>
+
+            <form class="auth-form" id="signupForm">
+                <input type="hidden" id="userType" name="userType" value="client">
+
+                <div class="form-group">
+                    <label for="fullName">الاسم الكامل</label>
+                    <input type="text" id="fullName" name="fullName" placeholder="أدخل اسمك الكامل" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupEmail">البريد الإلكتروني</label>
+                    <input type="email" id="signupEmail" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">رقم الهاتف</label>
+                    <input type="tel" id="phone" name="phone" placeholder="أدخل رقم هاتفك" required>
+                </div>
+
+                <div class="form-group" id="specialtyGroup" style="display: none;">
+                    <label for="specialty">التخصص</label>
+                    <select id="specialty" name="specialty">
+                        <option value="">اختر التخصص</option>
+                        <option value="carpentry">نجارة</option>
+                        <option value="plumbing">سباكة</option>
+                        <option value="electrical">كهرباء</option>
+                        <option value="painting">دهان</option>
+                        <option value="tiling">بلاط</option>
+                        <option value="welding">حدادة</option>
+                        <option value="construction">بناء</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="signupPassword">كلمة المرور</label>
+                    <input type="password" id="signupPassword" name="password" placeholder="أدخل كلمة المرور (8 أحرف على الأقل)" required minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">تأكيد كلمة المرور</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" placeholder="أعد إدخال كلمة المرور" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="terms" required>
+                        <span>أوافق على <a href="#" class="link">الشروط والأحكام</a> و <a href="#" class="link">سياسة الخصوصية</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">إنشاء الحساب</button>
+            </form>
+
+            <div class="divider">
+                <span>أو</span>
+            </div>
+
+            <div class="social-login">
+                <div id="g_id_onload"
+                    data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                    data-callback="handleGoogleSignUp"
+                    data-auto_select="false"
+                    data-cancel_on_tap_outside="true">
+                </div>
+                <div class="g_id_signin" 
+                    data-type="standard"
+                    data-size="large"
+                    data-theme="outline"
+                    data-text="signup_with"
+                    data-shape="rectangular"
+                    data-logo_alignment="right">
+                </div>
+            </div>
+
+            <div class="auth-footer">
+                <p>لديك حساب بالفعل؟ <a href="login.html">سجل دخول</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
+

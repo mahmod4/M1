@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>البروفايل - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <a href="index.html" style="text-decoration: none; color: inherit;">
+                            <h2>🛠️ منصة الحرفيين</h2>
+                        </a>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="craftsmen.html">الحرفيين</a></li>
+                        <li><a href="my-orders.html">طلباتي</a></li>
+                        <li><a href="chat.html">المحادثات</a></li>
+                    </ul>
+                    <div class="nav-buttons">
+                        <a href="profile.html" class="btn btn-outline">البروفايل</a>
+                        <button class="btn btn-primary" id="logoutBtn">تسجيل الخروج</button>
+                    </div>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="padding: 3rem 20px;">
+        <div class="profile-container">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar-section">
+                    <div class="avatar-container">
+                        <img src="" alt="صورة البروفايل" id="profileAvatar" class="profile-avatar">
+                        <label for="avatarUpload" class="avatar-upload-btn">
+                            <span>📷</span>
+                            <input type="file" id="avatarUpload" accept="image/*" style="display: none;">
+                        </label>
+                    </div>
+                    <h1 id="profileName">جاري التحميل...</h1>
+                    <p id="profileEmail" class="profile-email">جاري التحميل...</p>
+                    <p id="profileType" class="profile-type"></p>
+                </div>
+            </div>
+
+            <!-- Profile Tabs -->
+            <div class="profile-tabs">
+                <button class="tab-btn active" data-tab="info">المعلومات الشخصية</button>
+                <button class="tab-btn" data-tab="password">تغيير كلمة المرور</button>
+                <button class="tab-btn" data-tab="craftsman" id="craftsmanTab" style="display: none;">معلومات الحرفي</button>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="tab-content">
+                <!-- Personal Info Tab -->
+                <div class="tab-pane active" id="infoTab">
+                    <form class="profile-form" id="profileForm">
+                        <div class="form-group">
+                            <label for="fullName">الاسم الكامل</label>
+                            <input type="text" id="fullName" name="fullName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">البريد الإلكتروني</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">رقم الهاتف</label>
+                            <input type="tel" id="phone" name="phone" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">العنوان</label>
+                            <input type="text" id="address" name="address">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="city">المحافظة</label>
+                            <select id="city" name="city">
+                                <option value="">اختر المحافظة</option>
+                                <option value="cairo">القاهرة</option>
+                                <option value="alexandria">الإسكندرية</option>
+                                <option value="giza">الجيزة</option>
+                                <option value="mansoura">المنصورة</option>
+                                <option value="tanta">طنطا</option>
+                                <option value="aswan">أسوان</option>
+                                <option value="luxor">الأقصر</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    </form>
+                </div>
+
+                <!-- Change Password Tab -->
+                <div class="tab-pane" id="passwordTab">
+                    <form class="profile-form" id="passwordForm">
+                        <div class="form-group">
+                            <label for="oldPassword">كلمة المرور الحالية</label>
+                            <input type="password" id="oldPassword" name="oldPassword" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="newPassword">كلمة المرور الجديدة</label>
+                            <input type="password" id="newPassword" name="newPassword" required minlength="8">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="confirmNewPassword">تأكيد كلمة المرور الجديدة</label>
+                            <input type="password" id="confirmNewPassword" name="confirmNewPassword" required>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">تغيير كلمة المرور</button>
+                    </form>
+                </div>
+
+                <!-- Craftsman Info Tab -->
+                <div class="tab-pane" id="craftsmanTab">
+                    <form class="profile-form" id="craftsmanForm">
+                        <div class="form-group">
+                            <label for="specialty">التخصص</label>
+                            <select id="specialty" name="specialty" required>
+                                <option value="">اختر التخصص</option>
+                                <option value="carpentry">نجارة</option>
+                                <option value="plumbing">سباكة</option>
+                                <option value="electrical">كهرباء</option>
+                                <option value="painting">دهان</option>
+                                <option value="tiling">بلاط</option>
+                                <option value="welding">حدادة</option>
+                                <option value="construction">بناء</option>
+                                <option value="other">أخرى</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="experience">سنوات الخبرة</label>
+                            <input type="number" id="experience" name="experience" min="0" max="50">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hourlyRate">السعر بالساعة (جنيه)</label>
+                            <input type="number" id="hourlyRate" name="hourlyRate" min="0">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio">نبذة عنك</label>
+                            <textarea id="bio" name="bio" rows="5" placeholder="اكتب نبذة عنك وخبراتك..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label>معرض الأعمال (صور)</label>
+                            <div class="file-upload-area" id="portfolioUpload">
+                                <input type="file" id="portfolioFiles" multiple accept="image/*" style="display: none;">
+                                <button type="button" class="btn btn-outline" onclick="document.getElementById('portfolioFiles').click()">
+                                    📁 رفع صور
+                                </button>
+                                <div class="uploaded-files" id="uploadedFiles"></div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="script.js"></script>
+    <script src="profile.js"></script>
+</body>
+</html>
+
+

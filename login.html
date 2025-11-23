@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="index.html" class="logo-link">
+                    <h2>🛠️ منصة الحرفيين</h2>
+                </a>
+                <h1>تسجيل الدخول</h1>
+                <p>مرحباً بعودتك! سجل دخولك للاستمرار</p>
+            </div>
+
+            <form class="auth-form" id="loginForm">
+                <div class="form-group">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input type="email" id="email" name="email" placeholder="أدخل بريدك الإلكتروني" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">كلمة المرور</label>
+                    <input type="password" id="password" name="password" placeholder="أدخل كلمة المرور" required>
+                    <a href="#" class="forgot-password">نسيت كلمة المرور؟</a>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember">
+                        <span>تذكرني</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">تسجيل الدخول</button>
+            </form>
+
+            <div class="divider">
+                <span>أو</span>
+            </div>
+
+            <div class="social-login">
+                <div id="g_id_onload"
+                    data-client_id="YOUR_GOOGLE_CLIENT_ID"
+                    data-callback="handleGoogleSignIn"
+                    data-auto_select="false"
+                    data-cancel_on_tap_outside="true">
+                </div>
+                <div class="g_id_signin" 
+                    data-type="standard"
+                    data-size="large"
+                    data-theme="outline"
+                    data-text="signin_with"
+                    data-shape="rectangular"
+                    data-logo_alignment="right">
+                </div>
+            </div>
+
+            <div class="auth-footer">
+                <p>ليس لديك حساب؟ <a href="signup.html">سجل الآن</a></p>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="auth.js"></script>
+</body>
+</html>
+

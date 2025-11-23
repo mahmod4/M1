@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>طلباتي - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <a href="index.html" style="text-decoration: none; color: inherit;">
+                            <h2>🛠️ منصة الحرفيين</h2>
+                        </a>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="craftsmen.html">الحرفيين</a></li>
+                        <li><a href="my-orders.html" class="active">طلباتي</a></li>
+                        <li><a href="chat.html">المحادثات</a></li>
+                    </ul>
+                    <div class="nav-buttons">
+                        <a href="profile.html" class="btn btn-outline">البروفايل</a>
+                        <button class="btn btn-primary" onclick="window.API.Auth.logout()">تسجيل الخروج</button>
+                    </div>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="padding: 3rem 20px;">
+        <div class="orders-header">
+            <h1>طلباتي</h1>
+            <a href="create-order.html" class="btn btn-primary">إنشاء طلب جديد</a>
+        </div>
+
+        <div class="orders-tabs">
+            <button class="tab-btn active" data-status="all">الكل</button>
+            <button class="tab-btn" data-status="pending">قيد الانتظار</button>
+            <button class="tab-btn" data-status="accepted">مقبولة</button>
+            <button class="tab-btn" data-status="in_progress">قيد التنفيذ</button>
+            <button class="tab-btn" data-status="completed">مكتملة</button>
+            <button class="tab-btn" data-status="rejected">مرفوضة</button>
+        </div>
+
+        <div class="orders-list" id="ordersList">
+            <div class="loading">جاري التحميل...</div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="script.js"></script>
+    <script src="my-orders.js"></script>
+</body>
+</html>
+
+

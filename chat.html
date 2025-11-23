@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المحادثات - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <a href="index.html" style="text-decoration: none; color: inherit;">
+                            <h2>🛠️ منصة الحرفيين</h2>
+                        </a>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="index.html">الرئيسية</a></li>
+                        <li><a href="craftsmen.html">الحرفيين</a></li>
+                        <li><a href="my-orders.html">طلباتي</a></li>
+                        <li><a href="chat.html" class="active">المحادثات</a></li>
+                    </ul>
+                    <div class="nav-buttons">
+                        <a href="profile.html" class="btn btn-outline">البروفايل</a>
+                        <button class="btn btn-primary" onclick="window.API.Auth.logout()">تسجيل الخروج</button>
+                    </div>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="chat-container">
+        <!-- Conversations List -->
+        <div class="conversations-sidebar" id="conversationsSidebar">
+            <div class="conversations-header">
+                <h2>المحادثات</h2>
+            </div>
+            <div class="conversations-list" id="conversationsList">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+        </div>
+
+        <!-- Chat Area -->
+        <div class="chat-area" id="chatArea">
+            <div class="chat-placeholder">
+                <p>اختر محادثة للبدء</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="script.js"></script>
+    <script src="chat.js"></script>
+</body>
+</html>
+
+

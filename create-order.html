@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>إنشاء طلب خدمة - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="auth-container">
+        <div class="auth-card" style="max-width: 700px;">
+            <div class="auth-header">
+                <h1>إنشاء طلب خدمة</h1>
+                <p>املأ التفاصيل لإنشاء طلب جديد</p>
+            </div>
+
+            <form class="auth-form" id="orderForm">
+                <input type="hidden" id="craftsmanId" name="craftsmanId">
+                
+                <div class="form-group">
+                    <label for="serviceType">نوع الخدمة</label>
+                    <select id="serviceType" name="serviceType" required>
+                        <option value="">اختر نوع الخدمة</option>
+                        <option value="carpentry">نجارة</option>
+                        <option value="plumbing">سباكة</option>
+                        <option value="electrical">كهرباء</option>
+                        <option value="painting">دهان</option>
+                        <option value="tiling">بلاط</option>
+                        <option value="welding">حدادة</option>
+                        <option value="construction">بناء</option>
+                        <option value="other">أخرى</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="title">عنوان الطلب</label>
+                    <input type="text" id="title" name="title" placeholder="مثال: إصلاح صنبور مياه" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">وصف تفصيلي</label>
+                    <textarea id="description" name="description" rows="5" placeholder="اكتب وصفاً تفصيلياً للخدمة المطلوبة..." required></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="address">عنوان العمل</label>
+                    <input type="text" id="address" name="address" placeholder="العنوان الكامل" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="city">المحافظة</label>
+                    <select id="city" name="city" required>
+                        <option value="">اختر المحافظة</option>
+                        <option value="cairo">القاهرة</option>
+                        <option value="alexandria">الإسكندرية</option>
+                        <option value="giza">الجيزة</option>
+                        <option value="mansoura">المنصورة</option>
+                        <option value="tanta">طنطا</option>
+                        <option value="aswan">أسوان</option>
+                        <option value="luxor">الأقصر</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="budget">الميزانية المتوقعة (جنيه)</label>
+                    <input type="number" id="budget" name="budget" min="0" placeholder="مثال: 500">
+                </div>
+
+                <div class="form-group">
+                    <label for="preferredDate">التاريخ المفضل</label>
+                    <input type="date" id="preferredDate" name="preferredDate">
+                </div>
+
+                <div class="form-group">
+                    <label>مرفقات (صور)</label>
+                    <div class="file-upload-area">
+                        <input type="file" id="orderFiles" multiple accept="image/*" style="display: none;">
+                        <button type="button" class="btn btn-outline" onclick="document.getElementById('orderFiles').click()">
+                            📁 رفع صور
+                        </button>
+                        <div class="uploaded-files" id="orderUploadedFiles"></div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">إنشاء الطلب</button>
+                <a href="index.html" class="btn btn-outline btn-block" style="text-align: center; text-decoration: none; margin-top: 1rem; display: block;">إلغاء</a>
+            </form>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="create-order.js"></script>
+</body>
+</html>
+
+
