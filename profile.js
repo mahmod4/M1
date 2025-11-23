@@ -34,13 +34,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load profile data
 async function loadProfile() {
     try {
-        const profile = await window.API.Users.getProfile();
+        console.log('[Profile] Loading profile from backend...');
+        
+        // محاولة جلب البيانات من الباك إند
+        let profile;
+        try {
+            profile = await window.API.Users.getProfile();
+            console.log('[Profile] Profile loaded from backend:', profile);
+        } catch (error) {
+            console.warn('[Profile] Failed to load from backend, using localStorage:', error);
+            // Fallback: استخدام البيانات من localStorage
+            const localUser = JSON.parse(localStorage.getItem('user') || '{}');
+            if (localUser.email) {
+                profile = localUser;
+                console.log('[Profile] Using localStorage data:', profile);
+            } else {
+                throw new Error('لا توجد بيانات متاحة');
+            }
+        }
         
         // Update header
-        document.getElementById('profileName').textContent = profile.fullName || profile.name;
-        document.getElementById('profileEmail').textContent = profile.email;
+        document.getElementById('profileName').textContent = profile.fullName || profile.name || 'مستخدم';
+        document.getElementById('profileEmail').textContent = profile.email || '';
         
-        if (profile.userType === 'craftsman') {
+        if (profile.userType === 'craftsman' || profile.user_type === 'craftsman') {
             document.getElementById('profileType').textContent = 'حرفي';
             document.getElementById('craftsmanTab').style.display = 'block';
         } else {
@@ -52,22 +69,36 @@ async function loadProfile() {
         }
         
         // Fill form fields
-        document.getElementById('fullName').value = profile.fullName || '';
+        document.getElementById('fullName').value = profile.fullName || profile.name || '';
         document.getElementById('email').value = profile.email || '';
         document.getElementById('phone').value = profile.phone || '';
         document.getElementById('address').value = profile.address || '';
         document.getElementById('city').value = profile.city || '';
         
         // Fill craftsman fields if applicable
-        if (profile.userType === 'craftsman' && profile.craftsmanInfo) {
-            document.getElementById('specialty').value = profile.craftsmanInfo.specialty || '';
-            document.getElementById('experience').value = profile.craftsmanInfo.experience || '';
-            document.getElementById('hourlyRate').value = profile.craftsmanInfo.hourlyRate || '';
-            document.getElementById('bio').value = profile.craftsmanInfo.bio || '';
+        if ((profile.userType === 'craftsman' || profile.user_type === 'craftsman')) {
+            if (profile.craftsmanInfo) {
+                document.getElementById('specialty').value = profile.craftsmanInfo.specialty || '';
+                document.getElementById('experience').value = profile.craftsmanInfo.experience || '';
+                document.getElementById('hourlyRate').value = profile.craftsmanInfo.hourlyRate || '';
+                document.getElementById('bio').value = profile.craftsmanInfo.bio || '';
+            } else {
+                // محاولة جلب البيانات من profile مباشرة
+                document.getElementById('specialty').value = profile.specialty || '';
+                document.getElementById('experience').value = profile.experience || '';
+                document.getElementById('hourlyRate').value = profile.hourlyRate || '';
+                document.getElementById('bio').value = profile.bio || '';
+            }
+        }
+        
+        // تحديث localStorage بالبيانات الجديدة من الباك إند
+        if (profile.id || profile.email) {
+            localStorage.setItem('user', JSON.stringify(profile));
+            console.log('[Profile] Updated localStorage with backend data');
         }
     } catch (error) {
-        console.error('Error loading profile:', error);
-        showMessage('فشل تحميل بيانات البروفايل', 'error');
+        console.error('[Profile] Error loading profile:', error);
+        showMessage('فشل تحميل بيانات البروفايل: ' + (error.message || 'خطأ غير معروف'), 'error');
     }
 }
 
@@ -107,9 +138,26 @@ function setupForms() {
         };
         
         try {
-            await window.API.Users.updateProfile(formData);
+            console.log('[Profile] Updating profile:', formData);
+            const updatedProfile = await window.API.Users.updateProfile(formData);
+            
+            console.log('[Profile] Profile updated successfully:', updatedProfile);
+            
+            // تحديث localStorage بالبيانات الجديدة
+            if (updatedProfile) {
+                const currentUser = JSON.parse(localStorage.getItem('user') || '{}');
+                const updatedUser = { ...currentUser, ...updatedProfile };
+                localStorage.setItem('user', JSON.stringify(updatedUser));
+                console.log('[Profile] Updated localStorage');
+            }
+            
+            // تحديث العرض
+            document.getElementById('profileName').textContent = formData.fullName;
+            document.getElementById('profileEmail').textContent = formData.email;
+            
             showMessage('تم تحديث البيانات بنجاح!', 'success');
         } catch (error) {
+            console.error('[Profile] Update error:', error);
             showMessage(error.message || 'فشل تحديث البيانات', 'error');
         }
     });
