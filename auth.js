@@ -288,7 +288,9 @@ function setupSignupForm() {
         }
         
         try {
-            console.log('Calling signup API...');
+            console.log('=== بدء إنشاء الحساب ===');
+            console.log('User Data:', { fullName, email, phone, userType, specialty });
+            
             // Call API
             const userData = {
                 fullName,
@@ -299,25 +301,57 @@ function setupSignupForm() {
                 specialty: userType === 'craftsman' ? specialty : undefined
             };
             
+            console.log('Sending to API:', { ...userData, password: '***' });
+            
             const response = await window.API.Auth.signup(userData);
             
-            console.log('Signup response:', response);
+            console.log('Signup response received:', response);
             
             // التحقق من نجاح التسجيل
+            await new Promise(resolve => setTimeout(resolve, 200)); // انتظر قليلاً
+            
             const savedUser = localStorage.getItem('user');
-            if (!savedUser) {
-                throw new Error('فشل حفظ بيانات المستخدم');
+            const token = window.API.TokenManager.getToken();
+            
+            console.log('Token saved:', !!token);
+            console.log('User saved:', !!savedUser);
+            
+            if (!savedUser && !response.user && !response.id) {
+                console.error('No user data saved!');
+                throw new Error('فشل حفظ بيانات المستخدم. يرجى المحاولة مرة أخرى');
             }
             
-            const user = JSON.parse(savedUser);
-            console.log('User saved:', user);
+            // حفظ المستخدم إذا لم يتم حفظه تلقائياً
+            if (!savedUser) {
+                if (response.user) {
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                    console.log('User saved manually from response.user');
+                } else if (response.id || response.email) {
+                    localStorage.setItem('user', JSON.stringify({
+                        id: response.id,
+                        email: response.email,
+                        fullName: response.name || response.fullName || fullName,
+                        userType: response.userType || response.user_type || userType,
+                        specialty: response.specialty || specialty
+                    }));
+                    console.log('User saved manually from response object');
+                }
+            }
+            
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            console.log('Final user data:', user);
             
             // التحقق من وجود token
-            const token = window.API.TokenManager.getToken();
-            if (!token && !user.id) {
-                console.warn('No token received, but user created successfully');
+            if (!token && response.token) {
+                window.API.TokenManager.setToken(response.token);
+                console.log('Token saved manually');
             }
             
+            if (!user.email && !user.id) {
+                throw new Error('بيانات المستخدم غير مكتملة. يرجى المحاولة مرة أخرى');
+            }
+            
+            console.log('=== تم إنشاء الحساب بنجاح ===');
             showMessage('تم إنشاء الحساب بنجاح!', 'success');
             
             // تحديث الأزرار في جميع الصفحات
@@ -331,20 +365,31 @@ function setupSignupForm() {
                 ? 'craftsman-dashboard.html' 
                 : 'client-dashboard.html';
             
+            console.log('Redirecting to:', dashboardLink);
+            
             setTimeout(() => {
                 window.location.href = dashboardLink;
             }, 1500);
         } catch (error) {
-            console.error('Signup error:', error);
+            console.error('=== خطأ في إنشاء الحساب ===');
+            console.error('Error details:', error);
+            console.error('Error message:', error.message);
+            console.error('Error stack:', error.stack);
             
             // رسائل خطأ واضحة
             let errorMessage = 'فشل إنشاء الحساب. يرجى المحاولة مرة أخرى';
             
             if (error.message) {
-                if (error.message.includes('مستخدم بالفعل') || error.message.includes('already exists')) {
+                if (error.message.includes('مستخدم بالفعل') || 
+                    error.message.includes('already exists') ||
+                    error.message.includes('مستخدم')) {
                     errorMessage = 'البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر';
-                } else if (error.message.includes('404')) {
-                    errorMessage = 'Endpoint غير موجود. يرجى التحقق من إعدادات Xano';
+                } else if (error.message.includes('404') || error.message.includes('not found')) {
+                    errorMessage = 'Endpoint غير موجود. يرجى التحقق من إعدادات Xano أو تحديث Query ID';
+                } else if (error.message.includes('400') || error.message.includes('Bad Request')) {
+                    errorMessage = 'بيانات غير صحيحة. يرجى التحقق من جميع الحقول';
+                } else if (error.message.includes('فشل حفظ')) {
+                    errorMessage = error.message;
                 } else {
                     errorMessage = error.message;
                 }

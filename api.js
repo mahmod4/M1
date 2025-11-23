@@ -112,24 +112,29 @@ const AuthAPI = {
     // تسجيل مستخدم جديد
     signup: async (userData) => {
         try {
+            console.log('[API] Signup called with:', { ...userData, password: '***' });
             let response;
             
             // إذا كان هناك Query ID للتسجيل، استخدمه
             if (XANO_QUERY_IDS.SIGNUP) {
+                console.log('[API] Using Query ID:', XANO_QUERY_IDS.SIGNUP);
                 response = await XanoQueries.callQuery(XANO_QUERY_IDS.SIGNUP, userData);
             } else {
                 // محاولة استخدام REST endpoint
                 try {
+                    console.log('[API] Trying REST endpoint: /auth/signup');
                     response = await apiRequest('/auth/signup', {
                         method: 'POST',
                         body: userData
                     });
                 } catch (error) {
                     // إذا فشل REST endpoint، حاول استخدام Query 3199389
-                    console.warn('REST endpoint failed, trying query endpoint...');
+                    console.warn('[API] REST endpoint failed, trying query endpoint 3199389...');
                     response = await XanoQueries.callQuery('3199389', userData);
                 }
             }
+            
+            console.log('[API] Signup response:', response);
             
             // التحقق من أن الرد يحتوي على بيانات المستخدم
             if (!response) {
@@ -139,18 +144,40 @@ const AuthAPI = {
             // حفظ token و user إذا كانا موجودين
             if (response.token) {
                 TokenManager.setToken(response.token);
+                console.log('[API] Token saved');
+            } else if (response.data && response.data.token) {
+                TokenManager.setToken(response.data.token);
+                console.log('[API] Token saved from response.data');
             }
             
             if (response.user) {
                 localStorage.setItem('user', JSON.stringify(response.user));
+                console.log('[API] User saved from response.user');
             } else if (response.data && response.data.user) {
                 localStorage.setItem('user', JSON.stringify(response.data.user));
-                if (response.data.token) {
-                    TokenManager.setToken(response.data.token);
-                }
+                console.log('[API] User saved from response.data.user');
             } else if (response.id || response.email) {
                 // إذا كان الرد هو user object مباشرة
-                localStorage.setItem('user', JSON.stringify(response));
+                const userToSave = {
+                    id: response.id,
+                    email: response.email,
+                    fullName: response.name || response.fullName || userData.fullName,
+                    phone: response.phone || userData.phone,
+                    userType: response.userType || response.user_type || userData.userType,
+                    specialty: response.specialty || userData.specialty
+                };
+                localStorage.setItem('user', JSON.stringify(userToSave));
+                console.log('[API] User saved from response object:', userToSave);
+            } else {
+                console.warn('[API] No user data in response, saving from userData');
+                // حفظ البيانات المرسلة كـ user مؤقت
+                localStorage.setItem('user', JSON.stringify({
+                    email: userData.email,
+                    fullName: userData.fullName,
+                    phone: userData.phone,
+                    userType: userData.userType,
+                    specialty: userData.specialty
+                }));
             }
             
             // تحديث الأزرار بعد التسجيل
@@ -160,14 +187,23 @@ const AuthAPI = {
             
             return response;
         } catch (error) {
-            // معالجة أخطاء محددة
-            if (error.message && error.message.includes('already exists') || 
-                error.message && error.message.includes('مستخدم موجود')) {
-                throw new Error('البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر');
-            }
+            console.error('[API] Signup error:', error);
             
-            if (error.message && error.message.includes('404')) {
-                throw new Error('Endpoint غير موجود. يرجى التحقق من إعدادات Xano');
+            // معالجة أخطاء محددة
+            if (error.message) {
+                if (error.message.includes('already exists') || 
+                    error.message.includes('مستخدم موجود') ||
+                    error.message.includes('مستخدم بالفعل')) {
+                    throw new Error('البريد الإلكتروني مستخدم بالفعل. يرجى تسجيل الدخول أو استخدام بريد آخر');
+                }
+                
+                if (error.message.includes('404') || error.message.includes('not found')) {
+                    throw new Error('Endpoint غير موجود. يرجى التحقق من إعدادات Xano أو تحديث Query ID في api.js');
+                }
+                
+                if (error.message.includes('400') || error.message.includes('Bad Request')) {
+                    throw new Error('بيانات غير صحيحة. يرجى التحقق من جميع الحقول');
+                }
             }
             
             throw error;
@@ -691,7 +727,12 @@ const XanoQueries = {
         };
         
         try {
+            console.log(`[Xano Query ${queryId}] Calling:`, fullUrl);
+            console.log(`[Xano Query ${queryId}] Params:`, { ...params, password: params.password ? '***' : undefined });
+            
             const response = await fetch(fullUrl, config);
+            
+            console.log(`[Xano Query ${queryId}] Response status:`, response.status);
             
             if (response.status === 401) {
                 TokenManager.removeToken();
@@ -702,30 +743,44 @@ const XanoQueries = {
                 throw new Error('ليس لديك صلاحية للوصول');
             }
             
-            const data = await response.json();
+            let data;
+            try {
+                data = await response.json();
+                console.log(`[Xano Query ${queryId}] Response data:`, data);
+            } catch (parseError) {
+                const text = await response.text();
+                console.error(`[Xano Query ${queryId}] Failed to parse JSON:`, text);
+                throw new Error('رد غير صحيح من السيرفر');
+            }
             
             // معالجة أخطاء محددة من Xano
             if (response.status === 400) {
                 if (data.message && (data.message.includes('already exists') || data.message.includes('مستخدم'))) {
                     throw new Error('البريد الإلكتروني مستخدم بالفعل');
                 }
-                throw new Error(data.message || 'بيانات غير صحيحة');
+                throw new Error(data.message || data.error || 'بيانات غير صحيحة');
             }
             
             if (response.status === 404) {
-                throw new Error('المستخدم غير موجود');
+                throw new Error('المستخدم غير موجود أو Endpoint غير موجود');
             }
             
-            if (response.status === 401) {
-                throw new Error('البريد الإلكتروني أو كلمة المرور غير صحيحة');
+            if (response.status >= 500) {
+                throw new Error('خطأ في السيرفر. يرجى المحاولة لاحقاً');
             }
             
-            return data.data || data;
+            // إرجاع البيانات
+            const result = data.data || data;
+            console.log(`[Xano Query ${queryId}] Returning:`, result);
+            return result;
         } catch (error) {
-            // إذا كان الخطأ من fetch نفسه
-            if (error.message && !error.message.includes('البريد') && !error.message.includes('المستخدم')) {
-                console.error(`Xano Query ${queryId} Error:`, error);
+            console.error(`[Xano Query ${queryId}] Error:`, error);
+            
+            // إذا كان الخطأ من fetch نفسه (مثل network error)
+            if (error.name === 'TypeError' && error.message.includes('fetch')) {
+                throw new Error('فشل الاتصال بالسيرفر. يرجى التحقق من الاتصال بالإنترنت');
             }
+            
             throw error;
         }
     }
