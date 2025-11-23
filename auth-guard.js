@@ -86,7 +86,8 @@ function redirectIfAuthenticated() {
             localStorage.removeItem('returnUrl');
             window.location.href = returnUrl;
         } else {
-            window.location.href = 'index.html';
+            // التوجيه إلى صفحة البروفايل بدلاً من index.html
+            window.location.href = 'profile.html';
         }
     }
 }

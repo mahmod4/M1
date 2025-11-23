@@ -17,16 +17,10 @@ async function handleGoogleSignIn(response) {
             updateAuthNavigation();
         }
         
-        // تحديد لوحة التحكم المناسبة
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const userType = user.userType || user.user_type;
-        const dashboardLink = userType === 'craftsman' 
-            ? 'craftsman-dashboard.html' 
-            : 'client-dashboard.html';
-        
+        // التوجيه إلى صفحة البروفايل
         setTimeout(() => {
-            window.location.href = dashboardLink;
-        }, 1000);
+            window.location.href = 'profile.html';
+        }, 1500);
     } catch (error) {
         showMessage(error.message || 'فشل تسجيل الدخول عبر Google', 'error');
     }
@@ -162,14 +156,9 @@ function setupLoginForm() {
                 updateAuthNavigation();
             }
             
-            // تحديد لوحة التحكم المناسبة
-            const userType = user.userType || user.user_type;
-            const dashboardLink = userType === 'craftsman' 
-                ? 'craftsman-dashboard.html' 
-                : 'client-dashboard.html';
-            
+            // التوجيه إلى صفحة البروفايل
             setTimeout(() => {
-                window.location.href = dashboardLink;
+                window.location.href = 'profile.html';
             }, 1500);
         } catch (error) {
             console.error('Login error:', error);
