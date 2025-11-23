@@ -3,6 +3,13 @@
 // الرابط الكامل: https://x8ki-letl-twmt.n7.xano.io/workspace/132210-0/api/320199/query/3199389
 const API_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:320199'; // Xano API Base URL
 
+// Xano Query IDs - قم بتحديثها حسب Query IDs في Xano Dashboard
+const XANO_QUERY_IDS = {
+    SIGNUP: null, // قم بتحديثه بـ Query ID للتسجيل (مثال: '3199389')
+    LOGIN: null,  // قم بتحديثه بـ Query ID لتسجيل الدخول
+    // يمكنك إضافة المزيد هنا
+};
+
 // Token Management
 const TokenManager = {
     getToken: () => {
@@ -104,25 +111,71 @@ async function apiRequest(endpoint, options = {}) {
 const AuthAPI = {
     // تسجيل مستخدم جديد
     signup: async (userData) => {
-        return await apiRequest('/auth/signup', {
-            method: 'POST',
-            body: userData
-        });
+        // إذا كان هناك Query ID للتسجيل، استخدمه
+        if (XANO_QUERY_IDS.SIGNUP) {
+            return await XanoQueries.callQuery(XANO_QUERY_IDS.SIGNUP, userData);
+        }
+        
+        // محاولة استخدام REST endpoint
+        try {
+            return await apiRequest('/auth/signup', {
+                method: 'POST',
+                body: userData
+            });
+        } catch (error) {
+            // إذا فشل REST endpoint، حاول استخدام Query 3199389 (أول query متوفر)
+            console.warn('REST endpoint failed, trying query endpoint...');
+            try {
+                return await XanoQueries.callQuery('3199389', userData);
+            } catch (queryError) {
+                throw new Error('فشل إنشاء الحساب. يرجى التحقق من إعدادات Xano أو تحديث XANO_QUERY_IDS.SIGNUP في api.js');
+            }
+        }
     },
     
     // تسجيل الدخول
     login: async (email, password) => {
-        const response = await apiRequest('/auth/login', {
-            method: 'POST',
-            body: { email, password }
-        });
-        
-        if (response.token) {
-            TokenManager.setToken(response.token);
-            localStorage.setItem('user', JSON.stringify(response.user));
+        // إذا كان هناك Query ID لتسجيل الدخول، استخدمه
+        if (XANO_QUERY_IDS.LOGIN) {
+            const response = await XanoQueries.callQuery(XANO_QUERY_IDS.LOGIN, { email, password });
+            
+            if (response.token) {
+                TokenManager.setToken(response.token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+            }
+            
+            return response;
         }
         
-        return response;
+        // محاولة استخدام REST endpoint
+        try {
+            const response = await apiRequest('/auth/login', {
+                method: 'POST',
+                body: { email, password }
+            });
+            
+            if (response.token) {
+                TokenManager.setToken(response.token);
+                localStorage.setItem('user', JSON.stringify(response.user));
+            }
+            
+            return response;
+        } catch (error) {
+            // إذا فشل REST endpoint، حاول استخدام Query
+            console.warn('REST endpoint failed, trying query endpoint...');
+            try {
+                const response = await XanoQueries.callQuery('3199390', { email, password });
+                
+                if (response.token) {
+                    TokenManager.setToken(response.token);
+                    localStorage.setItem('user', JSON.stringify(response.user));
+                }
+                
+                return response;
+            } catch (queryError) {
+                throw new Error('فشل تسجيل الدخول. يرجى التحقق من إعدادات Xano أو تحديث XANO_QUERY_IDS.LOGIN في api.js');
+            }
+        }
     },
     
     // تسجيل الدخول عبر Google
