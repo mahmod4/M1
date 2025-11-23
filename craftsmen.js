@@ -22,12 +22,30 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Update navigation based on auth status
 function updateNavigation() {
     const navButtons = document.getElementById('navButtons');
-    if (window.API.TokenManager.isAuthenticated()) {
+    if (window.API && window.API.TokenManager.isAuthenticated()) {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userType = user.userType || user.user_type;
+        
+        // تحديد رابط لوحة التحكم حسب نوع المستخدم
+        const dashboardLink = userType === 'craftsman' 
+            ? 'craftsman-dashboard.html' 
+            : 'client-dashboard.html';
+        
         navButtons.innerHTML = `
+            <a href="${dashboardLink}" class="btn btn-primary">لوحة التحكم</a>
             <a href="profile.html" class="btn btn-outline">البروفايل</a>
-            <button class="btn btn-primary" onclick="window.API.Auth.logout()">تسجيل الخروج</button>
+            <button class="btn btn-outline" id="logoutBtnNav">تسجيل الخروج</button>
         `;
+        
+        // Setup logout button
+        const logoutBtn = document.getElementById('logoutBtnNav');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => {
+                if (window.API && window.API.Auth) {
+                    window.API.Auth.logout();
+                }
+            });
+        }
     }
 }
 

@@ -182,9 +182,17 @@ function updateAuthNavigation() {
     
     if (window.API && window.API.TokenManager.isAuthenticated()) {
         const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userType = user.userType || user.user_type;
+        
+        // تحديد رابط لوحة التحكم حسب نوع المستخدم
+        const dashboardLink = userType === 'craftsman' 
+            ? 'craftsman-dashboard.html' 
+            : 'client-dashboard.html';
+        
         navButtons.innerHTML = `
+            <a href="${dashboardLink}" class="btn btn-primary">لوحة التحكم</a>
             <a href="profile.html" class="btn btn-outline">البروفايل</a>
-            <button class="btn btn-primary" id="logoutBtnMain">تسجيل الخروج</button>
+            <button class="btn btn-outline" id="logoutBtnMain">تسجيل الخروج</button>
         `;
         
         // Setup logout button
@@ -204,17 +212,31 @@ function updateAuthNavigation() {
     }
 }
 
-// Update navigation on page load
-if (window.API) {
-    updateAuthNavigation();
-} else {
-    // Wait for API to load
-    window.addEventListener('load', () => {
-        if (window.API) {
-            updateAuthNavigation();
-        }
-    });
+// Update navigation on page load and after API loads
+function initNavigation() {
+    if (window.API) {
+        updateAuthNavigation();
+    } else {
+        // Wait for API to load
+        const checkAPI = setInterval(() => {
+            if (window.API) {
+                clearInterval(checkAPI);
+                updateAuthNavigation();
+            }
+        }, 100);
+    }
 }
+
+// Run on page load
+initNavigation();
+
+// Also run when API is loaded (in case it loads after page)
+window.addEventListener('load', () => {
+    setTimeout(initNavigation, 500);
+});
+
+// Make function globally available for other scripts
+window.updateAuthNavigation = updateAuthNavigation;
 
 console.log('منصة الحرفيين - تم تحميل الموقع بنجاح! 🛠️');
 

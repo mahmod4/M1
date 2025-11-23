@@ -12,8 +12,20 @@ async function handleGoogleSignIn(response) {
         
         showMessage('تم تسجيل الدخول بنجاح!', 'success');
         
+        // تحديث الأزرار في جميع الصفحات
+        if (typeof updateAuthNavigation === 'function') {
+            updateAuthNavigation();
+        }
+        
+        // تحديد لوحة التحكم المناسبة
+        const user = JSON.parse(localStorage.getItem('user') || '{}');
+        const userType = user.userType || user.user_type;
+        const dashboardLink = userType === 'craftsman' 
+            ? 'craftsman-dashboard.html' 
+            : 'client-dashboard.html';
+        
         setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = dashboardLink;
         }, 1000);
     } catch (error) {
         showMessage(error.message || 'فشل تسجيل الدخول عبر Google', 'error');
@@ -41,7 +53,7 @@ async function handleGoogleSignUp(response) {
             if (userType === 'craftsman') {
                 window.location.href = 'craftsman-dashboard.html';
             } else {
-                window.location.href = 'index.html';
+                window.location.href = 'client-dashboard.html';
             }
         }, 1000);
     } catch (error) {
@@ -123,8 +135,20 @@ function setupLoginForm() {
             
             showMessage('تم تسجيل الدخول بنجاح!', 'success');
             
+            // تحديث الأزرار في جميع الصفحات
+            if (typeof updateAuthNavigation === 'function') {
+                updateAuthNavigation();
+            }
+            
+            // تحديد لوحة التحكم المناسبة
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            const userType = user.userType || user.user_type;
+            const dashboardLink = userType === 'craftsman' 
+                ? 'craftsman-dashboard.html' 
+                : 'client-dashboard.html';
+            
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = dashboardLink;
             }, 1000);
         } catch (error) {
             showMessage(error.message || 'فشل تسجيل الدخول. يرجى المحاولة مرة أخرى', 'error');
@@ -247,7 +271,7 @@ function setupSignupForm() {
                 if (userType === 'craftsman') {
                     window.location.href = 'craftsman-dashboard.html';
                 } else {
-                    window.location.href = 'index.html';
+                    window.location.href = 'client-dashboard.html';
                 }
             }, 1000);
         } catch (error) {

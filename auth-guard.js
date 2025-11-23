@@ -8,7 +8,9 @@ const PROTECTED_PAGES = [
     'chat.html',
     'create-order.html',
     'add-review.html',
-    'admin-dashboard.html'
+    'admin-dashboard.html',
+    'craftsman-dashboard.html',
+    'client-dashboard.html'
 ];
 
 // قائمة الصفحات التي يجب تسجيل الخروج منها (إذا كان المستخدم مسجل دخول)

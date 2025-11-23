@@ -49,10 +49,10 @@
     <script src="script.js"></script>
     <script src="craftsman-details.js"></script>
     <script>
-        // Ensure API is loaded before using onclick
-        window.addEventListener('load', () => {
-            if (!window.API) {
-                console.error('API not loaded');
+        // Update navigation buttons
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.updateAuthNavigation) {
+                setTimeout(() => window.updateAuthNavigation(), 500);
             }
         });
     </script>

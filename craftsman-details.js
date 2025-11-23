@@ -1,5 +1,10 @@
 // Craftsman Details Page
 document.addEventListener('DOMContentLoaded', async () => {
+    // Update navigation buttons
+    if (window.updateAuthNavigation) {
+        setTimeout(() => window.updateAuthNavigation(), 500);
+    }
+    
     const urlParams = new URLSearchParams(window.location.search);
     const craftsmanId = urlParams.get('id');
     

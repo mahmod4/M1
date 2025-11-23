@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم العميل - منصة الحرفيين</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="container">
+                <div class="nav-wrapper">
+                    <div class="logo">
+                        <a href="index.html" style="text-decoration: none; color: inherit;">
+                            <h2>🛠️ لوحة تحكم العميل</h2>
+                        </a>
+                    </div>
+                    <ul class="nav-menu" id="navMenu">
+                        <li><a href="client-dashboard.html" class="active">الرئيسية</a></li>
+                        <li><a href="craftsmen.html">الحرفيين</a></li>
+                        <li><a href="my-orders.html">طلباتي</a></li>
+                        <li><a href="chat.html">المحادثات</a></li>
+                    </ul>
+                    <div class="nav-buttons">
+                        <a href="profile.html" class="btn btn-outline">البروفايل</a>
+                        <button class="btn btn-primary" id="logoutBtn">تسجيل الخروج</button>
+                    </div>
+                    <div class="hamburger" id="hamburger">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container" style="padding: 3rem 20px;">
+        <!-- Welcome Section -->
+        <div class="dashboard-welcome">
+            <h1>مرحباً بك، <span id="userName">عميل</span>! 👤</h1>
+            <p>ابحث عن أفضل الحرفيين لخدماتك</p>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <h3 id="totalOrders">-</h3>
+                    <p>إجمالي الطلبات</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <h3 id="completedOrders">-</h3>
+                    <p>الطلبات المكتملة</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <h3 id="activeOrders">-</h3>
+                    <p>الطلبات النشطة</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-info">
+                    <h3 id="messagesCount">-</h3>
+                    <p>المحادثات</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-section">
+            <h2>إجراءات سريعة</h2>
+            <div class="quick-actions">
+                <a href="create-order.html" class="action-card">
+                    <div class="action-icon">➕</div>
+                    <h3>إنشاء طلب جديد</h3>
+                    <p>اطلب خدمة من حرفي</p>
+                </a>
+                <a href="craftsmen.html" class="action-card">
+                    <div class="action-icon">🔍</div>
+                    <h3>استكشف الحرفيين</h3>
+                    <p>ابحث عن أفضل الحرفيين</p>
+                </a>
+                <a href="my-orders.html" class="action-card">
+                    <div class="action-icon">📋</div>
+                    <h3>طلباتي</h3>
+                    <p>عرض جميع طلباتك</p>
+                </a>
+                <a href="chat.html" class="action-card">
+                    <div class="action-icon">💬</div>
+                    <h3>المحادثات</h3>
+                    <p>تواصل مع الحرفيين</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Recent Orders -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>طلباتي الأخيرة</h2>
+                <a href="my-orders.html" class="btn btn-outline">عرض الكل</a>
+            </div>
+            <div id="recentOrders" class="orders-list">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+        </div>
+
+        <!-- Featured Craftsmen -->
+        <div class="dashboard-section">
+            <div class="section-header">
+                <h2>حرفيون مميزون</h2>
+                <a href="craftsmen.html" class="btn btn-outline">عرض الكل</a>
+            </div>
+            <div id="featuredCraftsmen" class="craftsmen-grid">
+                <div class="loading">جاري التحميل...</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="api.js"></script>
+    <script src="auth-guard.js"></script>
+    <script src="script.js"></script>
+    <script src="client-dashboard.js"></script>
+</body>
+</html>
+

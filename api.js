@@ -188,6 +188,11 @@ const AuthAPI = {
         if (response.token) {
             TokenManager.setToken(response.token);
             localStorage.setItem('user', JSON.stringify(response.user));
+            
+            // تحديث الأزرار بعد تسجيل الدخول
+            if (typeof updateAuthNavigation === 'function') {
+                setTimeout(() => updateAuthNavigation(), 100);
+            }
         }
         
         return response;
