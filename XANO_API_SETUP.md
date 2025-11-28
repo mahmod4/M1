@@ -2,7 +2,7 @@
 
 ## معلومات API
 
-**Base URL:** `https://x8ki-letl-twmt.n7.xano.io/api:320199`
+**Base URL:** `https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5`
 
 **Query Endpoints:**
 - Query 3199391: `https://x8ki-letl-twmt.n7.xano.io/api:320199/query/3199391`
@@ -12,7 +12,7 @@
 ## بنية Endpoints في Xano
 
 في Xano، عادة ما تكون البنية كالتالي:
-- Base URL: `https://x8ki-letl-twmt.n7.xano.io/api:320199`
+- Base URL: `https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5`
 - Endpoints: `/auth/login`, `/auth/signup`, `/craftsmen`, إلخ
 
 ## تحديث Endpoints في api.js
@@ -23,7 +23,7 @@
 
 ```javascript
 // إذا كان endpoint تسجيل الدخول هو:
-// https://x8ki-letl-twmt.n7.xano.io/api:320199/auth/login
+// https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5/auth/login
 AuthAPI.login = async (email, password) => {
     return await apiRequest('/auth/login', {
         method: 'POST',
@@ -32,7 +32,7 @@ AuthAPI.login = async (email, password) => {
 };
 
 // أو إذا كان مختلفاً، مثلاً:
-// https://x8ki-letl-twmt.n7.xano.io/api:320199/v1/user/login
+// https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5/v1/user/login
 AuthAPI.login = async (email, password) => {
     return await apiRequest('/v1/user/login', {
         method: 'POST',
@@ -49,7 +49,7 @@ AuthAPI.login = async (email, password) => {
 2. **Browser Console**:
 ```javascript
 // اختبار Base URL
-fetch('https://x8ki-letl-twmt.n7.xano.io/api:320199/health')
+fetch('https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5/health')
     .then(res => res.json())
     .then(data => console.log(data));
 ```

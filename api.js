@@ -1,7 +1,7 @@
 // API Service Layer - للتفاعل مع الباك إند
 // Base URL - Xano API
 // الرابط الكامل: https://x8ki-letl-twmt.n7.xano.io/workspace/132210-0/api/320199/query/3199389
-const API_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:320199'; // Xano API Base URL
+const API_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5'; // Xano API Base URL
 
 // Xano Query IDs - قم بتحديثها حسب Query IDs في Xano Dashboard
 const XANO_QUERY_IDS = {
