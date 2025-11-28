@@ -5,8 +5,8 @@ const API_BASE_URL = 'https://x8ki-letl-twmt.n7.xano.io/api:XDzfWuf5'; // Xano A
 
 // Xano Query IDs - قم بتحديثها حسب Query IDs في Xano Dashboard
 const XANO_QUERY_IDS = {
-    SIGNUP: '3199391', // Query ID للتسجيل
-    LOGIN: '3199390',  // Query ID لتسجيل الدخول
+    SIGNUP: '3199390', // Query ID للتسجيل
+    LOGIN: '3199389',  // Query ID لتسجيل الدخول
     // يمكنك إضافة المزيد هنا
 };
 
@@ -128,9 +128,9 @@ const AuthAPI = {
                         body: userData
                     });
                 } catch (error) {
-                    // إذا فشل REST endpoint، حاول استخدام Query 3199391
-                    console.warn('[API] REST endpoint failed, trying query endpoint 3199391...');
-                    response = await XanoQueries.callQuery('3199391', userData);
+                    // إذا فشل REST endpoint، حاول استخدام Query 3199390
+                    console.warn('[API] REST endpoint failed, trying query endpoint 3199390...');
+                    response = await XanoQueries.callQuery('3199390', userData);
                 }
             }
             
@@ -330,7 +330,7 @@ const AuthAPI = {
 const UsersAPI = {
     // الحصول على معلومات المستخدم
     getProfile: async () => {
-        return await apiRequest('/users/profile');
+        return await apiRequest('/auth/me');
     },
     
     // تحديث البروفايل
@@ -763,8 +763,8 @@ const XanoQueries = {
             
             if (response.status === 404) {
                 // في حالة التسجيل، 404 يعني أن Query غير موجود
-                if (queryId === '3199391' || queryId === XANO_QUERY_IDS.SIGNUP) {
-                    throw new Error('Query ID للتسجيل غير موجود في Xano. يرجى التحقق من Query ID: 3199391');
+                if (queryId === '3199390' || queryId === XANO_QUERY_IDS.SIGNUP) {
+                    throw new Error('Query ID للتسجيل غير موجود في Xano. يرجى التحقق من Query ID: 3199390');
                 }
                 throw new Error('المستخدم غير موجود أو Endpoint غير موجود');
             }
